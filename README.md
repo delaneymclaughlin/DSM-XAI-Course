@@ -8,9 +8,59 @@
 
 ## Dataset
 
-The Telco customer churn dataset is a fictional dataset from IBM representing customers of a telecommunications company providing phone and internet services measuring demographics, services used, contract type, tenure, payment method, and monthly and total charges. `Churn` is the target variable, with `Yes` meaning the customer churned and `No` meaning they stayed. 
 
-The churn prediction task is to use the available customer characteristics to predict whether a customer will churn.
+Used the Telco Customer Churn dataset to predict whether a telecom
+customer will leave the company.
+
+The original dataset contains 7,043 customer records. Each row represents
+one customer and includes demographic characteristics, subscribed
+services, contract details, payment information, and billing information.
+`Churn` is the target variable, with `Yes` indicating that the customer
+churned and `No` indicating that the customer stayed.
+
+For data cleaning, `customerID` was removed because it is an identifier
+rather than a meaningful predictor. `TotalCharges` was converted from
+text to a numeric variable. Eleven rows with missing `TotalCharges`
+values were removed, leaving 7,032 observations for analysis. Churn was
+then encoded as a binary outcome, where 0 represents staying and 1
+represents churning.
+
+The cleaned dataset has a moderately imbalanced target. Approximately
+73.4% of customers stayed, while 26.6% churned. Because non-churners are
+the majority class, accuracy alone may give an incomplete picture of
+model performance. We therefore also considered measures such as
+precision, recall, F1 score, and ROC-AUC.
+
+The predictors include several types of variables:
+- Continuous numerical variables: `tenure`, `MonthlyCharges`, and
+`TotalCharges`
+- A binary variable stored numerically: `SeniorCitizen`
+- Binary categorical variables describing characteristics such as
+partner status, dependents, phone service, and paperless billing
+- Multi-category variables such as `Contract`, `InternetService`, and
+`PaymentMethod`
+
+Categorical predictors were encoded so that they could be used by the
+models. The EDA also showed that some predictors contain overlapping
+information. In particular, `tenure` and `TotalCharges` were strongly
+correlated, with a correlation of approximately 0.826. Several
+internet-service variables were also structurally related. This
+predictor redundancy creates concerns when interpreting individual
+coefficients or GAM smooth effects.
+
+The EDA suggested that some continuous predictors do not have simple
+straight-line relationships with churn. Tenure showed especially clear
+curvature. This motivated checking the linearity-in-the-log-odds
+assumption for logistic regression and comparing logistic regression
+with a GAM that allows nonlinear smooth effects.
+
+Each model used the same stratified 80/20 train-test split, with a fixed
+random seed. This produced 5,625 training observations and 1,407
+held-out test observations. Stratification kept the churn proportions
+approximately equal in the training and test sets. No class-resampling
+method was applied, so the models were trained using the churn
+distribution observed in the cleaned dataset.
+
 
 ## Assumption Checks
 
